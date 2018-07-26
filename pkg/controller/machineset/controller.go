@@ -35,7 +35,7 @@ import (
 	clusterapiclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	listers "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
 	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
-	"sigs.k8s.io/cluster-api/pkg/util"
+	"k8s.io/apimachinery/pkg/util/wait"
 )
 
 // controllerKind contains the schema.GroupVersionKind for this controller type.
@@ -330,7 +330,7 @@ func getMachinesToDelete(filteredMachines []*v1alpha1.Machine, diff int) []*v1al
 
 func (c *MachineSetControllerImpl) waitForMachineCreation(machineList []*v1alpha1.Machine) error {
 	for _, machine := range machineList {
-		pollErr := util.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
+		pollErr := wait.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
 			_, err := c.machineLister.Machines(machine.Namespace).Get(machine.Name)
 			glog.Error(err)
 			if err == nil {
@@ -351,7 +351,7 @@ func (c *MachineSetControllerImpl) waitForMachineCreation(machineList []*v1alpha
 
 func (c *MachineSetControllerImpl) waitForMachineDeletion(machineList []*v1alpha1.Machine) error {
 	for _, machine := range machineList {
-		pollErr := util.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
+		pollErr := wait.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
 			m, err := c.machineLister.Machines(machine.Namespace).Get(machine.Name)
 			if errors.IsNotFound(err) || !m.DeletionTimestamp.IsZero() {
 				return true, nil
