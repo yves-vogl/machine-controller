@@ -33,7 +33,7 @@ import (
 	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
 	clusterapiclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	listers "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
-	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 	"k8s.io/apimachinery/pkg/util/wait"
 )
 

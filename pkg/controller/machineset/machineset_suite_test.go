@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/cluster-api/pkg/apis"
 	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	"sigs.k8s.io/cluster-api/pkg/controller/machineset"
-	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 	"sigs.k8s.io/cluster-api/pkg/openapi"
 )
 

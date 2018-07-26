@@ -24,7 +24,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 )
 
 // MachineSetController implements the controller.MachineSetController interface

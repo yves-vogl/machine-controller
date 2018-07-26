@@ -29,7 +29,7 @@ import (
 	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
 	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned/fake"
 	v1alpha1listers "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
-	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 )
 
 func TestMachineSetController_reconcileMachine(t *testing.T) {

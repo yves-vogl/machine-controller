@@ -7,7 +7,7 @@ go_library(
         "informers.go",
         "zz_generated.api.register.go",
     ],
-    importpath = "sigs.k8s.io/cluster-api/pkg/controller/sharedinformers",
+    importpath = "github.com/kubermatic/machine-controller/pkg/controller/sharedinformers",
     visibility = ["//visibility:public"],
     deps = [
         "//pkg/client/clientset_generated/clientset:go_default_library",
