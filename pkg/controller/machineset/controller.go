@@ -23,7 +23,6 @@ import (
 	"time"
 
 	"github.com/golang/glog"
-	"github.com/kubernetes-incubator/apiserver-builder/pkg/builders"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -50,7 +49,7 @@ var stateConfirmationInterval = 100 * time.Millisecond
 
 // +controller:group=cluster,version=v1alpha1,kind=MachineSet,resource=machinesets
 type MachineSetControllerImpl struct {
-	builders.DefaultControllerFns
+
 
 	// kubernetesClient a client that knows how to consume Node resources
 	kubernetesClient kubernetes.Interface
