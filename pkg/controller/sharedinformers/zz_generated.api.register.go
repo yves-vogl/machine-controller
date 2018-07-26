@@ -22,7 +22,7 @@ import (
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
-	"sigs.k8s.io/cluster-api/pkg/client/informers_generated/externalversions"
+	"github.com/kubermatic/machine-controller/pkg/client/informers/externalversions"
 	"time"
 )
 
