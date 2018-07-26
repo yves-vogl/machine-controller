@@ -14,4 +14,6 @@ for clusterapi_package in pkg/controller/machineset pkg/controller/sharedinforme
   sed -i '\#github.com/kubernetes-incubator/apiserver-builder/pkg/builders#d' $clusterapi_package/*
   sed -i '\#builders.#g' $clusterapi_package/*
   sed -i 's#ClusterV1alpha1#MachineV1alpha1#g' $clusterapi_package/*
+  sed -i '\#"github.com/kubernetes-incubator/apiserver-builder/pkg/controller"#d' $clusterapi_package/*
+  sed -i '\#controller.SharedInformersDefaults#d' $clusterapi_package/*
 done

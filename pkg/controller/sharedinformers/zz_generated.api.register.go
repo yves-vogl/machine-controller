@@ -19,7 +19,6 @@ limitations under the License.
 package sharedinformers
 
 import (
-	"github.com/kubernetes-incubator/apiserver-builder/pkg/controller"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
@@ -30,14 +29,12 @@ import (
 // SharedInformers wraps all informers used by controllers so that
 // they are shared across controller implementations
 type SharedInformers struct {
-	controller.SharedInformersDefaults
 	Factory externalversions.SharedInformerFactory
 }
 
 // newSharedInformers returns a set of started informers
 func NewSharedInformers(config *rest.Config, shutdown <-chan struct{}) *SharedInformers {
 	si := &SharedInformers{
-		controller.SharedInformersDefaults{},
 		externalversions.NewSharedInformerFactory(clientset.NewForConfigOrDie(config), 10*time.Minute),
 	}
 	if si.SetupKubernetesTypes() {
