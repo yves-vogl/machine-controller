@@ -137,7 +137,7 @@ func (c *MachineSetControllerImpl) Reconcile(machineSet *v1alpha1.MachineSet) er
 	newStatus := c.calculateStatus(ms, filteredMachines)
 
 	// Always updates status as machines come up or die.
-	updatedMS, err := updateMachineSetStatus(c.clusterAPIClient.ClusterV1alpha1().MachineSets(machineSet.Namespace), machineSet, newStatus)
+	updatedMS, err := updateMachineSetStatus(c.clusterAPIClient.MachineV1alpha1().MachineSets(machineSet.Namespace), machineSet, newStatus)
 	if err != nil {
 		if syncErr != nil {
 			return fmt.Errorf("failed to sync machines. %v. failed to update machine set status. %v", syncErr, err)
@@ -186,7 +186,7 @@ func (c *MachineSetControllerImpl) syncReplicas(ms *v1alpha1.MachineSet, machine
 		for i := 0; i < diff; i++ {
 			glog.Infof("creating machine %d of %d, ( spec.replicas(%d) > currentMachineCount(%d) )", i+1, diff, *(ms.Spec.Replicas), len(machines))
 			machine := c.createMachine(ms)
-			newMachine, err := c.clusterAPIClient.ClusterV1alpha1().Machines(ms.Namespace).Create(machine)
+			newMachine, err := c.clusterAPIClient.MachineV1alpha1().Machines(ms.Namespace).Create(machine)
 			if err != nil {
 				glog.Errorf("unable to create a machine = %s, due to %v", machine.Name, err)
 				errstrings = append(errstrings, err.Error())
@@ -212,7 +212,7 @@ func (c *MachineSetControllerImpl) syncReplicas(ms *v1alpha1.MachineSet, machine
 		for _, machine := range machinesToDelete {
 			go func(targetMachine *v1alpha1.Machine) {
 				defer wg.Done()
-				err := c.clusterAPIClient.ClusterV1alpha1().Machines(ms.Namespace).Delete(targetMachine.Name, &metav1.DeleteOptions{})
+				err := c.clusterAPIClient.MachineV1alpha1().Machines(ms.Namespace).Delete(targetMachine.Name, &metav1.DeleteOptions{})
 				if err != nil {
 					glog.Errorf("unable to delete a machine = %s, due to %v", machine.Name, err)
 					errCh <- err
@@ -294,7 +294,7 @@ func (c *MachineSetControllerImpl) adoptOrphan(machineSet *v1alpha1.MachineSet, 
 	newRef := *metav1.NewControllerRef(machineSet, controllerKind)
 	ownerRefs = append(ownerRefs, newRef)
 	machine.ObjectMeta.SetOwnerReferences(ownerRefs)
-	if _, err := c.clusterAPIClient.ClusterV1alpha1().Machines(machineSet.Namespace).Update(machine); err != nil {
+	if _, err := c.clusterAPIClient.MachineV1alpha1().Machines(machineSet.Namespace).Update(machine); err != nil {
 		glog.Warningf("Failed to update machine owner reference. %v", err)
 		return err
 	}

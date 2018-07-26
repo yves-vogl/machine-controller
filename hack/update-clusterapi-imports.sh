@@ -13,4 +13,5 @@ for clusterapi_package in pkg/controller/machineset; do
   sed -i 's#sigs.k8s.io/cluster-api/pkg/util#k8s.io/apimachinery/pkg/util/wait#g' $clusterapi_package/*
   sed -i '\#github.com/kubernetes-incubator/apiserver-builder/pkg/builders#d' $clusterapi_package/*
   sed -i '\#builders.#g' $clusterapi_package/*
+  sed -i 's#ClusterV1alpha1#MachineV1alpha1#g' $clusterapi_package/*
 done

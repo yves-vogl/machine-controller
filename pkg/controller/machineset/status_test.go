@@ -255,7 +255,7 @@ func TestMachineSetController_updateMachineSetStatus(t *testing.T) {
 				return true, newMS, nil
 			})
 
-			updatedMS, err := updateMachineSetStatus(fakeClient.ClusterV1alpha1().MachineSets(ms.Namespace), ms, test.newStatus)
+			updatedMS, err := updateMachineSetStatus(fakeClient.MachineV1alpha1().MachineSets(ms.Namespace), ms, test.newStatus)
 
 			if numCalls != len(test.attemptOutcomes) {
 				t.Fatalf("got %v update calls, expected %v update calls", numCalls, len(test.attemptOutcomes))

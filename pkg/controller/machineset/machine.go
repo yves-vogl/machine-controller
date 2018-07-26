@@ -38,7 +38,7 @@ func (c *MachineSetControllerImpl) reconcileMachine(key string) error {
 		return err
 	}
 
-	m, err := c.clusterAPIClient.ClusterV1alpha1().Machines(namespace).Get(name, metav1.GetOptions{})
+	m, err := c.clusterAPIClient.MachineV1alpha1().Machines(namespace).Get(name, metav1.GetOptions{})
 	if errors.IsNotFound(err) {
 		return nil
 	}

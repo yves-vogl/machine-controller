@@ -42,10 +42,10 @@ func machineSetControllerReconcile(t *testing.T, cs *clientset.Clientset, contro
 	// When creating a new object, it should invoke the reconcile method.
 	cluster := testutil.GetVanillaCluster()
 	cluster.Name = "cluster-1"
-	if _, err := cs.ClusterV1alpha1().Clusters("default").Create(&cluster); err != nil {
+	if _, err := cs.MachineV1alpha1().Clusters("default").Create(&cluster); err != nil {
 		t.Fatal(err)
 	}
-	client := cs.ClusterV1alpha1().MachineSets("default")
+	client := cs.MachineV1alpha1().MachineSets("default")
 	before := make(chan struct{})
 	after := make(chan struct{})
 	var aftOnce, befOnce sync.Once
