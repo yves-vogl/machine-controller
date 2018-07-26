@@ -28,8 +28,8 @@ import (
 	kubefake "k8s.io/client-go/kubernetes/fake"
 	core "k8s.io/client-go/testing"
 
-	"sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1"
-	"sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset/fake"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
+	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned/fake"
 )
 
 func TestMachineSetController_calculateStatus(t *testing.T) {

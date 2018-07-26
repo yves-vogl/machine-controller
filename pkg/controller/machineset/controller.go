@@ -31,9 +31,9 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 
-	"sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1"
-	clusterapiclientset "sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset"
-	listers "sigs.k8s.io/cluster-api/pkg/client/listers_generated/cluster/v1alpha1"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
+	clusterapiclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
+	listers "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
 	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
 	"sigs.k8s.io/cluster-api/pkg/util"
 )

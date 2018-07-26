@@ -23,9 +23,9 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	"sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1"
-	"sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1/testutil"
-	"sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1/testutil"
+	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	"sigs.k8s.io/cluster-api/pkg/controller/machineset"
 )
 

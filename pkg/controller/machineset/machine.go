@@ -27,7 +27,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/tools/cache"
 
-	"sigs.k8s.io/cluster-api/pkg/apis/cluster/v1alpha1"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
 )
 
 func (c *MachineSetControllerImpl) reconcileMachine(key string) error {

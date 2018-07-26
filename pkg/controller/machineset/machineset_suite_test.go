@@ -22,7 +22,7 @@ import (
 	"github.com/kubernetes-incubator/apiserver-builder/pkg/test"
 
 	"sigs.k8s.io/cluster-api/pkg/apis"
-	"sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset"
+	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	"sigs.k8s.io/cluster-api/pkg/controller/machineset"
 	"sigs.k8s.io/cluster-api/pkg/controller/sharedinformers"
 	"sigs.k8s.io/cluster-api/pkg/openapi"
