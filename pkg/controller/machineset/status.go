@@ -25,9 +25,9 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/labels"
 
+	machinesetclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned/typed/machines/v1alpha1"
 	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
-	machinesetclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned/typed/cluster/v1alpha1"
-	"sigs.k8s.io/cluster-api/pkg/controller/noderefutil"
+	//"sigs.k8s.io/cluster-api/pkg/controller/noderefutil"
 )
 
 const (
