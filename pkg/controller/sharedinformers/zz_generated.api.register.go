@@ -22,7 +22,7 @@ import (
 	"github.com/kubernetes-incubator/apiserver-builder/pkg/controller"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
-	"sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset"
+	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	"sigs.k8s.io/cluster-api/pkg/client/informers_generated/externalversions"
 	"time"
 )
