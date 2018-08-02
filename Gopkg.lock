@@ -688,6 +688,7 @@
 
 [[projects]]
   branch = "release-1.10"
+  digest = "1:802a62015ee56440c78b7a2e1e981f19bcccf105de730d6c8cc8db927581632a"
   name = "k8s.io/api"
   packages = [
     "admissionregistration/v1alpha1",
@@ -720,6 +721,7 @@
     "storage/v1beta1",
   ]
   pruneopts = "NUT"
+  revision = ""
 
 [[projects]]
   branch = "release-1.10"
@@ -744,7 +746,6 @@
     "pkg/api/errors",
     "pkg/api/meta",
     "pkg/api/resource",
-    "pkg/api/validation/path",
     "pkg/apis/meta/internalversion",
     "pkg/apis/meta/v1",
     "pkg/apis/meta/v1/unstructured",
@@ -788,16 +789,6 @@
   ]
   pruneopts = "NUT"
   revision = "01bc873149a1802eb74df583613872d126449ed5"
-
-[[projects]]
-  branch = "master"
-  name = "k8s.io/apiserver"
-  packages = [
-    "pkg/apis/audit",
-    "pkg/authentication/user",
-    "pkg/endpoints/request"
-  ]
-  revision = "563a7d9b065ea20fbdbe24506369772acb413d8d"
 
 [[projects]]
   branch = "release-7.0"
@@ -1068,6 +1059,7 @@
     "k8s.io/apimachinery/pkg/runtime/serializer",
     "k8s.io/apimachinery/pkg/selection",
     "k8s.io/apimachinery/pkg/types",
+    "k8s.io/apimachinery/pkg/util/diff",
     "k8s.io/apimachinery/pkg/util/errors",
     "k8s.io/apimachinery/pkg/util/rand",
     "k8s.io/apimachinery/pkg/util/runtime",
