@@ -19,22 +19,24 @@ limitations under the License.
 package sharedinformers
 
 import (
+	clientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
+	"github.com/kubermatic/machine-controller/pkg/client/informers/externalversions"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
-	"github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
-	"github.com/kubermatic/machine-controller/pkg/client/informers/externalversions"
 	"time"
 )
 
 // SharedInformers wraps all informers used by controllers so that
 // they are shared across controller implementations
 type SharedInformers struct {
+	SharedInformersDefaults
 	Factory externalversions.SharedInformerFactory
 }
 
 // newSharedInformers returns a set of started informers
 func NewSharedInformers(config *rest.Config, shutdown <-chan struct{}) *SharedInformers {
 	si := &SharedInformers{
+		SharedInformersDefaults{},
 		externalversions.NewSharedInformerFactory(clientset.NewForConfigOrDie(config), 10*time.Minute),
 	}
 	if si.SetupKubernetesTypes() {
@@ -48,10 +50,8 @@ func NewSharedInformers(config *rest.Config, shutdown <-chan struct{}) *SharedIn
 
 // startInformers starts all of the informers
 func (si *SharedInformers) startInformers(shutdown <-chan struct{}) {
-	go si.Factory.Cluster().V1alpha1().Clusters().Informer().Run(shutdown)
-	go si.Factory.Cluster().V1alpha1().Machines().Informer().Run(shutdown)
-	go si.Factory.Cluster().V1alpha1().MachineDeployments().Informer().Run(shutdown)
-	go si.Factory.Cluster().V1alpha1().MachineSets().Informer().Run(shutdown)
+	go si.Factory.Machine().V1alpha1().Machines().Informer().Run(shutdown)
+	go si.Factory.Machine().V1alpha1().MachineSets().Informer().Run(shutdown)
 }
 
 // ControllerInitArguments are arguments provided to the Init function for a new controller.
