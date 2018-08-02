@@ -70,8 +70,8 @@ type MachineSetControllerImpl struct {
 func (c *MachineSetControllerImpl) Init(arguments sharedinformers.ControllerInitArguments) {
 	c.kubernetesClient = arguments.GetSharedInformers().KubernetesClientSet
 
-	c.machineSetLister = arguments.GetSharedInformers().Factory.Cluster().V1alpha1().MachineSets().Lister()
-	c.machineLister = arguments.GetSharedInformers().Factory.Cluster().V1alpha1().Machines().Lister()
+	c.machineSetLister = arguments.GetSharedInformers().Factory.Machine().V1alpha1().MachineSets().Lister()
+	c.machineLister = arguments.GetSharedInformers().Factory.Machine().V1alpha1().Machines().Lister()
 
 	var err error
 	c.clusterAPIClient, err = clusterapiclientset.NewForConfig(arguments.GetRestConfig())
@@ -81,7 +81,7 @@ func (c *MachineSetControllerImpl) Init(arguments sharedinformers.ControllerInit
 
 	// Start watching for Machine resource. It will effectively create a new worker queue, and
 	// reconcileMachine() will be invoked in a loop to handle the reconciling.
-	mi := arguments.GetSharedInformers().Factory.Cluster().V1alpha1().Machines().Informer()
+	mi := arguments.GetSharedInformers().Factory.Machine().V1alpha1().Machines().Informer()
 	arguments.GetSharedInformers().Watch("MachineWatcher", mi, nil, c.reconcileMachine)
 
 	c.informers = arguments.GetSharedInformers()
@@ -94,8 +94,8 @@ func (c *MachineSetControllerImpl) waitForCacheSync() {
 
 	stopCh := make(chan struct{})
 
-	msListerSynced := c.informers.Factory.Cluster().V1alpha1().MachineSets().Informer().HasSynced
-	mListerSynced := c.informers.Factory.Cluster().V1alpha1().Machines().Informer().HasSynced
+	msListerSynced := c.informers.Factory.Machine().V1alpha1().MachineSets().Informer().HasSynced
+	mListerSynced := c.informers.Factory.Machine().V1alpha1().Machines().Informer().HasSynced
 
 	if !cache.WaitForCacheSync(stopCh, mListerSynced, msListerSynced) {
 		glog.Warningf("Unable to sync caches for machineset controller")

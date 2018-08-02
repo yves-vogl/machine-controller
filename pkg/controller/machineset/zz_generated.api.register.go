@@ -20,11 +20,12 @@ package machineset
 
 import (
 	"github.com/golang/glog"
+	"github.com/kubermatic/machine-controller/pkg/apiserver-builder/pkg/controller"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/util/workqueue"
-	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 )
 
 // MachineSetController implements the controller.MachineSetController interface
@@ -68,7 +69,7 @@ func NewMachineSetController(config *rest.Config, si *sharedinformers.SharedInfo
 		c.Informers.WorkerQueues = map[string]*controller.QueueWorker{}
 	}
 	c.Informers.WorkerQueues["MachineSet"] = queue
-	si.Factory.Cluster().V1alpha1().MachineSets().Informer().
+	si.Factory.Machine().V1alpha1().MachineSets().Informer().
 		AddEventHandler(&controller.QueueingEventHandler{q, nil, false})
 	return c
 }
