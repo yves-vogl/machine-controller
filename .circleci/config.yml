@@ -19,7 +19,7 @@ jobs:
     steps:
       - restore_cache:
           key: repo-{{ .Environment.CIRCLE_SHA1 }}
-      - run: DEP_RELEASE_TAG=v0.4.1 curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+      - run: export DEP_RELEASE_TAG=v0.5.0; curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
       - run: dep status
 
   verify-codegen:
@@ -80,6 +80,7 @@ jobs:
           name: Clean up machines
           command: ./test/tools/integration/cleanup_machines.sh
           when: always
+          no_output_timeout: 25m
       - run:
           name: Clean up master
           command: make -C test/tools/integration destroy

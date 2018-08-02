@@ -55,6 +55,8 @@ func (f *sharedInformerFactory) ForResource(resource schema.GroupVersionResource
 	// Group=machine.k8s.io, Version=v1alpha1
 	case v1alpha1.SchemeGroupVersion.WithResource("machines"):
 		return &genericInformer{resource: resource.GroupResource(), informer: f.Machine().V1alpha1().Machines().Informer()}, nil
+	case v1alpha1.SchemeGroupVersion.WithResource("machinesets"):
+		return &genericInformer{resource: resource.GroupResource(), informer: f.Machine().V1alpha1().MachineSets().Informer()}, nil
 
 	}
 

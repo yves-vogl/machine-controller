@@ -28,6 +28,7 @@ import (
 type MachineV1alpha1Interface interface {
 	RESTClient() rest.Interface
 	MachinesGetter
+	MachineSetsGetter
 }
 
 // MachineV1alpha1Client is used to interact with features provided by the machine.k8s.io group.
@@ -37,6 +38,10 @@ type MachineV1alpha1Client struct {
 
 func (c *MachineV1alpha1Client) Machines() MachineInterface {
 	return newMachines(c)
+}
+
+func (c *MachineV1alpha1Client) MachineSets(namespace string) MachineSetInterface {
+	return newMachineSets(c, namespace)
 }
 
 // NewForConfig creates a new MachineV1alpha1Client for the given config.

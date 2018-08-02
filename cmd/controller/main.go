@@ -179,8 +179,8 @@ func main() {
 	prometheusRegistry := prometheus.NewRegistry()
 
 	// before we acquire a lock we actually warm up caches mirroring the state of the API server
-	machineInformerFactory := machineinformers.NewSharedInformerFactory(machineClient, time.Second*30)
-	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Second*30)
+	machineInformerFactory := machineinformers.NewSharedInformerFactory(machineClient, time.Minute*15)
+	kubeInformerFactory := kubeinformers.NewSharedInformerFactory(kubeClient, time.Minute*15)
 	kubePublicKubeInformerFactory := kubeinformers.NewFilteredSharedInformerFactory(kubeClient, time.Second*30, metav1.NamespacePublic, nil)
 	kubeSystemInformerFactory := kubeinformers.NewFilteredSharedInformerFactory(kubeClient, time.Second*30, metav1.NamespaceSystem, nil)
 	defaultKubeInformerFactory := kubeinformers.NewFilteredSharedInformerFactory(kubeClient, time.Second*30, metav1.NamespaceDefault, nil)
@@ -231,13 +231,13 @@ func main() {
 			machineInformerFactory.Machine().V1alpha1().Machines().Lister(),
 		))
 
-		s := createUtilHttpServer(kubeClient, kubeconfigProvider, prometheusRegistry)
+		s := createUtilHTTPServer(kubeClient, kubeconfigProvider, prometheusRegistry)
 		g.Add(func() error {
 			return s.ListenAndServe()
 		}, func(err error) {
-			ctx, cancel := context.WithTimeout(ctx, time.Second)
+			srvCtx, cancel := context.WithTimeout(ctx, time.Second)
 			defer cancel()
-			s.Shutdown(ctx)
+			s.Shutdown(srvCtx)
 		})
 	}
 	{
@@ -338,8 +338,8 @@ func startControllerViaLeaderElection(runOptions controllerRunOptions) error {
 	return nil
 }
 
-// createUtilHttpServer creates a new HTTP server
-func createUtilHttpServer(kubeClient *kubernetes.Clientset, kubeconfigProvider machinecontroller.KubeconfigProvider, prometheusGatherer prometheus.Gatherer) *http.Server {
+// createUtilHTTPServer creates a new HTTP server
+func createUtilHTTPServer(kubeClient *kubernetes.Clientset, kubeconfigProvider machinecontroller.KubeconfigProvider, prometheusGatherer prometheus.Gatherer) *http.Server {
 	health := healthcheck.NewHandler()
 	health.AddReadinessCheck("apiserver-connection", machinehealth.ApiserverReachable(kubeClient))
 
