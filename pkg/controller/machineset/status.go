@@ -27,7 +27,7 @@ import (
 
 	machinesetclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned/typed/machines/v1alpha1"
 	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
-	//"sigs.k8s.io/cluster-api/pkg/controller/noderefutil"
+	"github.com/kubermatic/machine-controller/pkg/controller/noderefutil"
 )
 
 const (
