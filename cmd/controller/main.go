@@ -37,6 +37,7 @@ import (
 	"k8s.io/client-go/kubernetes/scheme"
 	typedcorev1 "k8s.io/client-go/kubernetes/typed/core/v1"
 	listerscorev1 "k8s.io/client-go/listers/core/v1"
+	"k8s.io/client-go/rest"
 	"k8s.io/client-go/tools/cache"
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/leaderelection"
@@ -50,6 +51,8 @@ import (
 	machinelistersv1alpha1 "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
 	"github.com/kubermatic/machine-controller/pkg/clusterinfo"
 	machinecontroller "github.com/kubermatic/machine-controller/pkg/controller/machine"
+	machinesetcontroller "github.com/kubermatic/machine-controller/pkg/controller/machineset"
+	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
 	machinehealth "github.com/kubermatic/machine-controller/pkg/health"
 	"github.com/kubermatic/machine-controller/pkg/machines"
 	"github.com/kubermatic/machine-controller/pkg/signals"
@@ -127,6 +130,9 @@ type controllerRunOptions struct {
 
 	// prometheusRegisterer is used by the MachineController instance to register its metrics
 	prometheusRegisterer prometheus.Registerer
+
+	// The rest.Config is required for the machineSetController
+	restConfig rest.Config
 }
 
 func main() {
@@ -201,6 +207,7 @@ func main() {
 		kubeconfigProvider:   kubeconfigProvider,
 		name:                 name,
 		prometheusRegisterer: prometheusRegistry,
+		restConfig:           cfg,
 	}
 
 	kubeInformerFactory.Start(stopCh)
@@ -293,7 +300,7 @@ func startControllerViaLeaderElection(runOptions controllerRunOptions) error {
 	// to stop the leader election library might cause synchronization issues.
 	// imagine that a user wants to shutdown the app but since there is no way of telling the library to stop it will eventually run `runController` method
 	// and bad things can happen - the fact it works at the moment doesn't mean it will in the future
-	runController := func(_ <-chan struct{}) {
+	runController := func(stopChannel <-chan struct{}) {
 		machineController := machinecontroller.NewMachineController(
 			runOptions.kubeClient,
 			runOptions.machineClient,
@@ -308,6 +315,12 @@ func startControllerViaLeaderElection(runOptions controllerRunOptions) error {
 			runOptions.kubeconfigProvider,
 			runOptions.name,
 		)
+
+		clusterAPISharedInformers := sharedinformers.NewSharedInformers(
+			&runOptions.restConfig, stopChannel)
+		machineSetController := machinesetcontroller.NewMachineSetController(
+			&runOptions.restConfig, clusterAPISharedInformers)
+		machinSetController.Run(stopChannel)
 
 		if runErr := machineController.Run(workerCount, runOptions.parentCtx.Done()); runErr != nil {
 			glog.Errorf("error running controller: %v", runErr)
