@@ -19,7 +19,12 @@ sed -i 's#sigs.k8s.io/cluster-api/pkg/client/informers_generated/externalversion
 sed -i 's#Cluster().V1alpha1()#Machine().V1alpha1()#g' pkg/controller/sharedinformers/zz_generated.api.register.go
 sed -i 's#Cluster().V1alpha1()#Machine().V1alpha1()#g' pkg/controller/machineset/zz_generated.api.register.go
 sed -i 's#Cluster().V1alpha1()#Machine().V1alpha1()#g' pkg/controller/machineset/controller.go
+sed -i 's#Machines(ms.Namespace)#Machines()#g' pkg/controller/machineset/controller.go
+sed -i 's#Machines(machineSet.Namespace)#Machines()#g' pkg/controller/machineset/controller.go
+sed -i 's#Machines(namespace)#Machines()#g' pkg/controller/machineset/machine.go
 sed -i '/si.Factory.Machine().V1alpha1().MachineDeployments().Informer().Run(shutdown)/d' pkg/controller/sharedinformers/zz_generated.api.register.go
 sed -i '/si.Factory.Machine().V1alpha1().Clusters().Informer().Run(shutdown)/d' pkg/controller/sharedinformers/zz_generated.api.register.go
+sed -i 's#machineLister.Machines(machineSet.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
+sed -i 's#machineLister.Machines(machine.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
 
 go fmt pkg/controller/sharedinformers/zz_generated.api.register.go

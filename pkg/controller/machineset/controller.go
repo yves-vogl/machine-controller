@@ -30,10 +30,10 @@ import (
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/tools/cache"
 
-	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
 	clusterapiclientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	listers "github.com/kubermatic/machine-controller/pkg/client/listers/machines/v1alpha1"
 	"github.com/kubermatic/machine-controller/pkg/controller/sharedinformers"
+	"github.com/kubermatic/machine-controller/pkg/machines/v1alpha1"
 	"k8s.io/apimachinery/pkg/util/wait"
 )
 
@@ -49,7 +49,6 @@ var stateConfirmationInterval = 100 * time.Millisecond
 
 // +controller:group=cluster,version=v1alpha1,kind=MachineSet,resource=machinesets
 type MachineSetControllerImpl struct {
-
 
 	// kubernetesClient a client that knows how to consume Node resources
 	kubernetesClient kubernetes.Interface
@@ -110,7 +109,7 @@ func (c *MachineSetControllerImpl) waitForCacheSync() {
 // that are owned by the given machineSet (key).
 func (c *MachineSetControllerImpl) Reconcile(machineSet *v1alpha1.MachineSet) error {
 	glog.V(4).Infof("Reconcile machineset %v", machineSet.Name)
-	allMachines, err := c.machineLister.Machines(machineSet.Namespace).List(labels.Everything())
+	allMachines, err := c.machineLister.List(labels.Everything())
 	if err != nil {
 		return fmt.Errorf("failed to list machines, %v", err)
 	}
@@ -186,7 +185,7 @@ func (c *MachineSetControllerImpl) syncReplicas(ms *v1alpha1.MachineSet, machine
 		for i := 0; i < diff; i++ {
 			glog.Infof("creating machine %d of %d, ( spec.replicas(%d) > currentMachineCount(%d) )", i+1, diff, *(ms.Spec.Replicas), len(machines))
 			machine := c.createMachine(ms)
-			newMachine, err := c.clusterAPIClient.MachineV1alpha1().Machines(ms.Namespace).Create(machine)
+			newMachine, err := c.clusterAPIClient.MachineV1alpha1().Machines().Create(machine)
 			if err != nil {
 				glog.Errorf("unable to create a machine = %s, due to %v", machine.Name, err)
 				errstrings = append(errstrings, err.Error())
@@ -212,7 +211,7 @@ func (c *MachineSetControllerImpl) syncReplicas(ms *v1alpha1.MachineSet, machine
 		for _, machine := range machinesToDelete {
 			go func(targetMachine *v1alpha1.Machine) {
 				defer wg.Done()
-				err := c.clusterAPIClient.MachineV1alpha1().Machines(ms.Namespace).Delete(targetMachine.Name, &metav1.DeleteOptions{})
+				err := c.clusterAPIClient.MachineV1alpha1().Machines().Delete(targetMachine.Name, &metav1.DeleteOptions{})
 				if err != nil {
 					glog.Errorf("unable to delete a machine = %s, due to %v", machine.Name, err)
 					errCh <- err
@@ -294,7 +293,7 @@ func (c *MachineSetControllerImpl) adoptOrphan(machineSet *v1alpha1.MachineSet, 
 	newRef := *metav1.NewControllerRef(machineSet, controllerKind)
 	ownerRefs = append(ownerRefs, newRef)
 	machine.ObjectMeta.SetOwnerReferences(ownerRefs)
-	if _, err := c.clusterAPIClient.MachineV1alpha1().Machines(machineSet.Namespace).Update(machine); err != nil {
+	if _, err := c.clusterAPIClient.MachineV1alpha1().Machines().Update(machine); err != nil {
 		glog.Warningf("Failed to update machine owner reference. %v", err)
 		return err
 	}
@@ -330,7 +329,7 @@ func getMachinesToDelete(filteredMachines []*v1alpha1.Machine, diff int) []*v1al
 func (c *MachineSetControllerImpl) waitForMachineCreation(machineList []*v1alpha1.Machine) error {
 	for _, machine := range machineList {
 		pollErr := wait.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
-			_, err := c.machineLister.Machines(machine.Namespace).Get(machine.Name)
+			_, err := c.machineLister.Get(machine.Name)
 			glog.Error(err)
 			if err == nil {
 				return true, nil
@@ -351,7 +350,7 @@ func (c *MachineSetControllerImpl) waitForMachineCreation(machineList []*v1alpha
 func (c *MachineSetControllerImpl) waitForMachineDeletion(machineList []*v1alpha1.Machine) error {
 	for _, machine := range machineList {
 		pollErr := wait.Poll(stateConfirmationInterval, stateConfirmationTimeout, func() (bool, error) {
-			m, err := c.machineLister.Machines(machine.Namespace).Get(machine.Name)
+			m, err := c.machineLister.Get(machine.Name)
 			if errors.IsNotFound(err) || !m.DeletionTimestamp.IsZero() {
 				return true, nil
 			}
