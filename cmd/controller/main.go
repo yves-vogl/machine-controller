@@ -132,7 +132,7 @@ type controllerRunOptions struct {
 	prometheusRegisterer prometheus.Registerer
 
 	// The rest.Config is required for the machineSetController
-	restConfig rest.Config
+	restConfig *rest.Config
 }
 
 func main() {
@@ -317,10 +317,10 @@ func startControllerViaLeaderElection(runOptions controllerRunOptions) error {
 		)
 
 		clusterAPISharedInformers := sharedinformers.NewSharedInformers(
-			&runOptions.restConfig, stopChannel)
+			runOptions.restConfig, stopChannel)
 		machineSetController := machinesetcontroller.NewMachineSetController(
-			&runOptions.restConfig, clusterAPISharedInformers)
-		machinSetController.Run(stopChannel)
+			runOptions.restConfig, clusterAPISharedInformers)
+		machineSetController.Run(stopChannel)
 
 		if runErr := machineController.Run(workerCount, runOptions.parentCtx.Done()); runErr != nil {
 			glog.Errorf("error running controller: %v", runErr)

@@ -19,6 +19,7 @@ limitations under the License.
 package sharedinformers
 
 import (
+	"github.com/kubermatic/machine-controller/pkg/apiserver-builder/pkg/controller"
 	clientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"
 	"github.com/kubermatic/machine-controller/pkg/client/informers/externalversions"
 	"k8s.io/client-go/rest"
@@ -29,14 +30,14 @@ import (
 // SharedInformers wraps all informers used by controllers so that
 // they are shared across controller implementations
 type SharedInformers struct {
-	SharedInformersDefaults
+	controller.SharedInformersDefaults
 	Factory externalversions.SharedInformerFactory
 }
 
 // newSharedInformers returns a set of started informers
 func NewSharedInformers(config *rest.Config, shutdown <-chan struct{}) *SharedInformers {
 	si := &SharedInformers{
-		SharedInformersDefaults{},
+		controller.SharedInformersDefaults{},
 		externalversions.NewSharedInformerFactory(clientset.NewForConfigOrDie(config), 10*time.Minute),
 	}
 	if si.SetupKubernetesTypes() {

@@ -3,8 +3,12 @@ package controller
 import (
 	"time"
 
+	"github.com/kubermatic/machine-controller/pkg/apiserver-builder/pkg/builders"
+
 	"github.com/golang/glog"
 
+	"k8s.io/apimachinery/pkg/util/runtime"
+	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/informers"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
@@ -33,6 +37,73 @@ type QueueWorker struct {
 	MaxRetries int
 	Name       string
 	Reconcile  func(key string) error
+}
+
+// Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
+type DefaultMethods interface {
+	Run(stopCh <-chan struct{})
+}
+
+// Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
+func GetDefaults(c interface{}) DefaultMethods {
+	i, ok := c.(DefaultMethods)
+	if !ok {
+		return &builders.DefaultControllerFns{}
+	}
+	return i
+}
+
+// Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
+func (q *QueueWorker) ProcessMessage() bool {
+	key, quit := q.Queue.Get()
+	if quit {
+		// Queue is empty
+		return true
+	}
+	defer q.Queue.Done(key)
+
+	// Do the work
+	err := q.Reconcile(key.(string))
+	if err == nil {
+		// Success.  Clear the requeue count for this key.
+		q.Queue.Forget(key)
+		return false
+	}
+
+	// Error.  Maybe retry if haven't hit the limit.
+	if q.Queue.NumRequeues(key) < q.MaxRetries {
+		glog.V(4).Infof("Error handling %s Queue message %v: %v", q.Name, key, err)
+		q.Queue.AddRateLimited(key)
+		return false
+	}
+
+	glog.V(4).Infof("Too many retries for %s Queue message %v: %v", q.Name, key, err)
+	q.Queue.Forget(key)
+	return false
+}
+
+// Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
+func (q *QueueWorker) ProcessAllMessages() {
+	for done := false; !done; {
+		// Process all messages in the Queue
+		done = q.ProcessMessage()
+	}
+}
+
+// Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
+func (q *QueueWorker) Run(shutdown <-chan struct{}) {
+	defer runtime.HandleCrash()
+
+	// Every second, process all messages in the Queue until it is time to shutdown
+	go wait.Until(q.ProcessAllMessages, time.Second, shutdown)
+
+	go func() {
+		<-shutdown
+
+		// Stop accepting messages into the Queue
+		glog.V(1).Infof("Shutting down %s Queue\n", q.Name)
+		q.Queue.ShutDown()
+	}()
 }
 
 // Copied from github.com/kubernetes-incubator/apiserver-builder/pkg/controller/controller.go
