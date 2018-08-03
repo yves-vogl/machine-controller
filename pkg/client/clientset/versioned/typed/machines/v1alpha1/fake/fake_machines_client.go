@@ -32,8 +32,8 @@ func (c *FakeMachineV1alpha1) Machines() v1alpha1.MachineInterface {
 	return &FakeMachines{c}
 }
 
-func (c *FakeMachineV1alpha1) MachineSets(namespace string) v1alpha1.MachineSetInterface {
-	return &FakeMachineSets{c, namespace}
+func (c *FakeMachineV1alpha1) MachineSets() v1alpha1.MachineSetInterface {
+	return &FakeMachineSets{c}
 }
 
 // RESTClient returns a RESTClient that is used to communicate

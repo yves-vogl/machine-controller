@@ -40,8 +40,8 @@ func (c *MachineV1alpha1Client) Machines() MachineInterface {
 	return newMachines(c)
 }
 
-func (c *MachineV1alpha1Client) MachineSets(namespace string) MachineSetInterface {
-	return newMachineSets(c, namespace)
+func (c *MachineV1alpha1Client) MachineSets() MachineSetInterface {
+	return newMachineSets(c)
 }
 
 // NewForConfig creates a new MachineV1alpha1Client for the given config.

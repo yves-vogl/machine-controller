@@ -23,6 +23,7 @@ import (
 )
 
 // +genclient
+// +genclient:nonNamespaced
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
 // MachineSet ensures that a specified number of machines replicas are running at any given time.

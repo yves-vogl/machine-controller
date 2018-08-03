@@ -48,5 +48,5 @@ func (v *version) Machines() MachineInformer {
 
 // MachineSets returns a MachineSetInformer.
 func (v *version) MachineSets() MachineSetInformer {
-	return &machineSetInformer{factory: v.factory, namespace: v.namespace, tweakListOptions: v.tweakListOptions}
+	return &machineSetInformer{factory: v.factory, tweakListOptions: v.tweakListOptions}
 }
