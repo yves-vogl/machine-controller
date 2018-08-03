@@ -1,0 +1,34 @@
+apiVersion: "machine.k8s.io/v1alpha1"
+kind: MachineSet
+metadata:
+  name: machineset1
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      foo: bar
+  template:
+    metadata:
+      labels:
+        foo: bar
+    spec:
+      providerConfig:
+        sshPublicKeys: []
+        cloudProvider: "hetzner"
+        cloudProviderSpec:
+        # If empty, can be set via HZ_TOKEN env var
+          token: HZTOKEN
+          serverType: "cx11"
+          datacenter: ""
+          location: "fsn1"
+        # Can be 'ubuntu', 'coreos' or 'centos'
+        operatingSystem: "ubuntu"
+        operatingSystemSpec:
+          distUpgradeOnBoot: false
+      roles:
+      - "Node"
+      versions:
+        kubelet: "1.10.5"
+        # Must be 'docker' if you don't use Ubuntu
+        containerRuntime:
+          name: "docker"
