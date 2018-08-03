@@ -11,7 +11,6 @@ done
 
 sed -i '#github.com/kubernetes-incubator/apiserver-builder/pkg/controller#github.com/kubermatic/machine-controller/pkg/apiserver-builder/pkg/controller' \
   pkg/controller/sharedinformers/zz_generated.api.register.go
-sed -i 's#controller.SharedInformersDefaults#SharedInformersDefaults#g' pkg/controller/sharedinformers/zz_generated.api.register.go
 sed -i 's#"sigs.k8s.io/cluster-api/pkg/client/clientset_generated/clientset"#clientset "github.com/kubermatic/machine-controller/pkg/client/clientset/versioned"#g' \
   pkg/controller/sharedinformers/zz_generated.api.register.go
 sed -i 's#sigs.k8s.io/cluster-api/pkg/client/informers_generated/externalversions#github.com/kubermatic/machine-controller/pkg/client/informers/externalversions#g' \
@@ -27,5 +26,7 @@ sed -i '/si.Factory.Machine().V1alpha1().Clusters().Informer().Run(shutdown)/d' 
 sed -i 's#machineLister.Machines(machineSet.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
 sed -i 's#machineLister.Machines(machine.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
 sed -i 's#sigs.k8s.io/cluster-api/pkg/controller/noderefutil#github.com/kubermatic/machine-controller/pkg/controller/noderefutil#g' pkg/controller/machineset/status.go
+
+sed -i 's#machineSetLister.MachineSets#machineSetLister#g' pkg/controller/machineset/zz_generated.api.register.go
 
 go fmt pkg/controller/sharedinformers/zz_generated.api.register.go
