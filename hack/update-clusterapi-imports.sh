@@ -25,6 +25,11 @@ sed -i '/si.Factory.Machine().V1alpha1().MachineDeployments().Informer().Run(shu
 sed -i '/si.Factory.Machine().V1alpha1().Clusters().Informer().Run(shutdown)/d' pkg/controller/sharedinformers/zz_generated.api.register.go
 sed -i 's#machineLister.Machines(machineSet.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
 sed -i 's#machineLister.Machines(machine.Namespace)#machineLister#g' pkg/controller/machineset/controller.go
+sed -i 's#machineSetLister.MachineSets()#machineSetLister#g' pkg/controller/machineset/controller.go
+sed -i 's#machineSetLister.MachineSets(namespace)#machineSetLister#g' pkg/controller/machineset/machine.go
+sed -i 's#machineSetLister.MachineSets(m.Namespace)#machineSetLister#g' pkg/controller/machineset/machine.go
+sed -i 's#MachineSets(machineSet.Namespace)#MachineSets()#g' pkg/controller/machineset/controller.go
+sed -i 's#var namespace, name string#var name string#g' pkg/controller/machineset/zz_generated.api.register.go
 sed -i 's#sigs.k8s.io/cluster-api/pkg/controller/noderefutil#github.com/kubermatic/machine-controller/pkg/controller/noderefutil#g' pkg/controller/machineset/status.go
 
 sed -i 's#machineSetLister.MachineSets#machineSetLister#g' pkg/controller/machineset/zz_generated.api.register.go

@@ -82,7 +82,7 @@ func (c *MachineSetControllerImpl) resolveControllerRef(namespace string, contro
 		glog.Warningf("Found unexpected controller ref kind, got %v, expected %v", controllerRef.Kind, controllerKind.Kind)
 		return nil
 	}
-	ms, err := c.machineSetLister.MachineSets(namespace).Get(controllerRef.Name)
+	ms, err := c.machineSetLister.Get(controllerRef.Name)
 	if err != nil {
 		glog.Warningf("Failed to get machine set with name %v.", controllerRef.Name)
 		return nil
@@ -101,7 +101,7 @@ func (c *MachineSetControllerImpl) getMachineSetsForMachine(m *v1alpha1.Machine)
 		return nil
 	}
 
-	msList, err := c.machineSetLister.MachineSets(m.Namespace).List(labels.Everything())
+	msList, err := c.machineSetLister.List(labels.Everything())
 	if err != nil {
 		glog.Errorf("Failed to list machine sets, %v", err)
 		return nil

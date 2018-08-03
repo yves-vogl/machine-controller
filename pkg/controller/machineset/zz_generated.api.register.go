@@ -83,7 +83,7 @@ func (c *MachineSetController) LookupAndReconcile(key string) (err error) {
 }
 
 func (c *MachineSetController) reconcile(key string) (err error) {
-	var namespace, name string
+	var name string
 
 	if c.BeforeReconcile != nil {
 		c.BeforeReconcile(key)
@@ -93,12 +93,12 @@ func (c *MachineSetController) reconcile(key string) (err error) {
 		defer func() { c.AfterReconcile(key, err) }()
 	}
 
-	namespace, name, err = cache.SplitMetaNamespaceKey(key)
+	_, name, err = cache.SplitMetaNamespaceKey(key)
 	if err != nil {
 		return
 	}
 
-	u, err := c.controller.Get(namespace, name)
+	u, err := c.controller.Get(name)
 	if errors.IsNotFound(err) {
 		glog.Infof("Not doing work for MachineSet %v because it has been deleted", key)
 		// Set error so it is picked up by AfterReconcile and the return function

@@ -136,7 +136,7 @@ func (c *MachineSetControllerImpl) Reconcile(machineSet *v1alpha1.MachineSet) er
 	newStatus := c.calculateStatus(ms, filteredMachines)
 
 	// Always updates status as machines come up or die.
-	updatedMS, err := updateMachineSetStatus(c.clusterAPIClient.MachineV1alpha1().MachineSets(machineSet.Namespace), machineSet, newStatus)
+	updatedMS, err := updateMachineSetStatus(c.clusterAPIClient.MachineV1alpha1().MachineSets(), machineSet, newStatus)
 	if err != nil {
 		if syncErr != nil {
 			return fmt.Errorf("failed to sync machines. %v. failed to update machine set status. %v", syncErr, err)
@@ -165,8 +165,8 @@ func (c *MachineSetControllerImpl) Reconcile(machineSet *v1alpha1.MachineSet) er
 	return syncErr
 }
 
-func (c *MachineSetControllerImpl) Get(namespace, name string) (*v1alpha1.MachineSet, error) {
-	return c.machineSetLister.MachineSets(namespace).Get(name)
+func (c *MachineSetControllerImpl) Get(name string) (*v1alpha1.MachineSet, error) {
+	return c.machineSetLister.Get(name)
 }
 
 // syncReplicas essentially scales machine resources up and down.
